@@ -10,11 +10,15 @@ import com.example.datastorage.Modelos.User
 class UserDBServices(context: Context) : SQLiteOpenHelper(context, "UserDBService", null, 1), IUserServices
 {
     override fun onCreate(db: SQLiteDatabase?) {
+        val sqlDestroy : String = "DROP TABLE users";
+        db?.execSQL(sqlDestroy)
+
         val sql : String = "CREATE TABLE users(idUser int primarykey," +
-                           " name text," +
-                           " email text," +
-                           " age integer," +
-                           " password text)"
+                " name text," +
+                " email text," +
+                " age integer," +
+                " password text," +
+                " image BLOB)"
         db?.execSQL(sql)
     }
 
@@ -62,12 +66,25 @@ class UserDBServices(context: Context) : SQLiteOpenHelper(context, "UserDBServic
         localUser.put("email", user.email)
         localUser.put("age", user.age)
         localUser.put("password", user.password)
+        localUser.put("image", user.image)
+
+        /*val sqlDestroy : String = "DROP TABLE users";
+        this.writableDatabase.execSQL(sqlDestroy)
+
+        val sql : String = "CREATE TABLE users(idUser int primarykey," +
+                " name text," +
+                " email text," +
+                " age integer," +
+                " password text," +
+                " image BLOB)"
+        this.writableDatabase.execSQL(sql)*/
+
         this.executeModification(localUser)
     }
 
     override fun consultUsers(): List<User>?
     {
-        val sql : String = "SELECT idUser, name, email, age, password FROM users"
+        val sql : String = "SELECT idUser, name, email, age, password, image FROM users"
         val result : Cursor = this.executeQuery(sql, this.writableDatabase)
         var listUsers : MutableList<User>? = ArrayList<User>()
         result.moveToFirst()
@@ -77,7 +94,6 @@ class UserDBServices(context: Context) : SQLiteOpenHelper(context, "UserDBServic
         while(!result.isAfterLast)
         {
 
-            print("Usuario nombre" + result.getString(1))
             val email = result.getString(2)
 
             var user : User = User(
@@ -85,7 +101,8 @@ class UserDBServices(context: Context) : SQLiteOpenHelper(context, "UserDBServic
                 result.getString(1),
                 email,
                 result.getInt(3),
-                result.getString(4)
+                result.getString(4),
+                result.getBlob(5)
             )
 
             if (!inside.contains(email)) {

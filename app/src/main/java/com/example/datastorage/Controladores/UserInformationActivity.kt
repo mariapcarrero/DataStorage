@@ -4,10 +4,12 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.ImageView
 import com.example.datastorage.R
 import com.example.datastorage.Modelos.User
 import com.google.gson.Gson
 import android.view.View
+import android.graphics.BitmapFactory
 
 class UserInformationActivity : AppCompatActivity() {
 
@@ -23,6 +25,14 @@ class UserInformationActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.nameProfileInfo).text = user.name
         findViewById<TextView>(R.id.ageProfileInfo).text = user.age.toString()
         findViewById<TextView>(R.id.emailProfileInfo).text = user.email
+        val img = user.image
+        if (img != null) {
+            findViewById<ImageView>(R.id.imageProfileInfo).setImageBitmap(
+                BitmapFactory.decodeByteArray(img, 0, img.size)
+            )
+        }
+
+
     }
 
     fun goBack(view : View) {
